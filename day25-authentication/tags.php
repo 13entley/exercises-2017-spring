@@ -1,4 +1,10 @@
 <?php
+session_start();
+if (empty($_SESSION['user'])) {
+	header('Location: login.php');
+	exit;
+}
+
 $pdo = new PDO('mysql:host=localhost;dbname=bootcamp_notes;charset=utf8', 'bootcamp', '');
 
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
