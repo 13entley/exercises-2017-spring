@@ -8,6 +8,7 @@ if ($_POST) {
 		$stmt = $pdo->prepare('INSERT INTO tags (name) VALUES (?)');
 		$stmt->execute(array($_POST['name']));
 		header('Location: form.php');
+		exit();
 	} else {
 		foreach ($errors as $error) {
 			echo '<p>' . htmlspecialchars($error) . '</p>';

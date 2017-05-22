@@ -1,4 +1,11 @@
 <?php
+session_start();
+if (empty($_SESSION['user'])) {
+	header('Location: login.php');
+	exit;
+} else {
+	echo 'Hello ' . htmlspecialchars($_SESSION['user']);
+}
 $pdo = new PDO('mysql:host=localhost;dbname=bootcamp_notes;charset=utf8', 'bootcamp', '');
 
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -20,6 +27,7 @@ if ($_POST) {
 			$stmt->execute(array($notesId, $tag));
 		}
 		header('Location: form.php');
+		exit();
 	} else {
 		foreach ($errors as $error) {
 			echo '<p>' . htmlspecialchars($error) . '</p>';
@@ -42,13 +50,15 @@ Note: <input type="text" name="note" value=""><br>
 </form>
 
 <?php
-$stmt = $pdo->prepare('SELECT n.title, n.note, t.name FROM notes n
+$stmt = $pdo->prepare('SELECT n.id, n.title, n.note, t.name FROM notes n
 	JOIN notes_have_tags nht ON n.id = nht.id_notes
 	JOIN tags t ON t.id = nht.id_tags');
 $stmt->execute();
 $notes = $stmt->fetchAll();
 
 foreach ($notes as $note) {
-	echo '<p><strong>' . $note['title'] . ': ' . $note['note'] . '</strong>, tag: '
-		. $note['name'] . '</option>';
+	echo '<p><strong><a href="update.php?id=' . htmlspecialchars($note['id']) . '">' . htmlspecialchars($note['title']) . '</a>: ' . htmlspecialchars($note['note']) . '</strong>, tag: '
+		. htmlspecialchars($note['name']) . '</p>';
 }
+?>
+<a href="logout.php">Log out</a>
